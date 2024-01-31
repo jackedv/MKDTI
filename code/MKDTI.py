@@ -41,10 +41,10 @@ class Model(nn.Module):
         self.drug_sim = t.DoubleTensor(drug_sim)
         self.target_sim = t.DoubleTensor(target_sim)
 
-        self.gcn_1 = conv.GATConv(self.drug_size + self.target_size, self.F1, self.heads[0])
-        self.gcn_2 = conv.GATConv(self.F1*self.heads[0], self.F2, self.heads[1])
-        self.gcn_3 = conv.GATConv(self.F2*self.heads[1], self.F3, self.heads[2])
-        self.gcn_4 = conv.GATConv(self.F3*self.heads[2], self.F4, self.heads[3])
+        self.gat_1 = conv.GATConv(self.drug_size + self.target_size, self.F1, self.heads[0])
+        self.gat_2 = conv.GATConv(self.F1*self.heads[0], self.F2, self.heads[1])
+        self.gat_3 = conv.GATConv(self.F2*self.heads[1], self.F3, self.heads[2])
+        self.gat_4 = conv.GATConv(self.F3*self.heads[2], self.F4, self.heads[3])
 
         self.alpha1 = t.randn(self.drug_size, self.target_size).double()
         self.alpha2 = t.randn(self.target_size, self.drug_size).double()
@@ -62,19 +62,19 @@ class Model(nn.Module):
         drugs_kernels = []
         target_kernels = []
 
-        H1 = t.relu(self.gcn_1(x, adj['edge_index'], adj['data'][adj['edge_index'][0], adj['edge_index'][1]])) 
+        H1 = t.relu(self.gat_1(x, adj['edge_index'], adj['data'][adj['edge_index'][0], adj['edge_index'][1]])) 
         drugs_kernels.append(t.DoubleTensor(getGipKernel(H1[:self.drug_size].clone(), 0, self.h1_gamma, True).double())) 
         target_kernels.append(t.DoubleTensor(getGipKernel(H1[self.drug_size:].clone(), 0, self.h1_gamma, True).double())) 
 
-        H2 = t.relu(self.gcn_2(H1, adj['edge_index'], adj['data'][adj['edge_index'][0], adj['edge_index'][1]]))
+        H2 = t.relu(self.gat_2(H1, adj['edge_index'], adj['data'][adj['edge_index'][0], adj['edge_index'][1]]))
         drugs_kernels.append(t.DoubleTensor(getGipKernel(H2[:self.drug_size].clone(), 0, self.h2_gamma, True).double()))
         target_kernels.append(t.DoubleTensor(getGipKernel(H2[self.drug_size:].clone(), 0, self.h2_gamma, True).double()))
 
-        H3 = t.relu(self.gcn_3(H2, adj['edge_index'], adj['data'][adj['edge_index'][0], adj['edge_index'][1]]))
+        H3 = t.relu(self.gat_3(H2, adj['edge_index'], adj['data'][adj['edge_index'][0], adj['edge_index'][1]]))
         drugs_kernels.append(t.DoubleTensor(getGipKernel(H3[:self.drug_size].clone(), 0, self.h3_gamma, True).double()))
         target_kernels.append(t.DoubleTensor(getGipKernel(H3[self.drug_size:].clone(), 0, self.h3_gamma, True).double()))
 
-        H4 = t.relu(self.gcn_4(H3, adj['edge_index'], adj['data'][adj['edge_index'][0], adj['edge_index'][1]]))
+        H4 = t.relu(self.gat_4(H3, adj['edge_index'], adj['data'][adj['edge_index'][0], adj['edge_index'][1]]))
         drugs_kernels.append(t.DoubleTensor(getGipKernel(H4[:self.drug_size].clone(), 0, self.h4_gamma, True).double()))
         target_kernels.append(t.DoubleTensor(getGipKernel(H4[self.drug_size:].clone(), 0, self.h4_gamma, True).double()))
 

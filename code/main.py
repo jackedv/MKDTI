@@ -9,7 +9,7 @@ import scipy.sparse as sp
 import torch as t
 from torch import optim
 
-import MKGCN
+import MKDTI as MKDTI
 from clac_metric import get_metrics
 from loss import Myloss
 from utils import Sizes, constructHNet, constructNet, get_edge_index
@@ -70,7 +70,7 @@ def PredictScore(train_drug_target_matrix, drug_matrix, target_matrix, seed, siz
     X = constructNet(train_drug_target_matrix)
     X = t.FloatTensor(X)
     train_data['feature'] = X 
-    model = MKGCN.Model(sizes, drug_matrix, target_matrix) 
+    model = MKDTI.Model(sizes, drug_matrix, target_matrix) 
 
     optimizer = optim.Adam(model.parameters(), lr=sizes.learn_rate) 
     train(model, train_data, optimizer, sizes) 
@@ -136,7 +136,7 @@ def cross_validation_experiment(drug_target_matrix, drug_matrix, target_matrix, 
 
 if __name__ == "__main__":
 
-   
+
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     data_path = '../data/'
     
