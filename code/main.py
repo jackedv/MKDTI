@@ -162,6 +162,6 @@ if __name__ == "__main__":
 
     result, pre_matrix = cross_validation_experiment(
         drug_target_matrix, drug_sim, target_sim, sizes)
-    
+
     print('Overall Performance:')
     print(result.tolist()[0])
