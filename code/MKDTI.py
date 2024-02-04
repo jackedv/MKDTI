@@ -35,8 +35,8 @@ class Model(nn.Module):
         self.kernel_len = 5
         self.drug_ps = t.ones(self.kernel_len) / self.kernel_len
         self.target_ps = t.ones(self.kernel_len) / self.kernel_len
-        self.drug_ps = t.tensor([1,0.5,0.333,0.25,0.2])
-        self.mic_ps = t.tensor([1,0.5,0.333,0.25,0.2])
+        self.drug_ps = t.tensor([1,0.5,0.5,0.3,0.3])
+        self.target_ps = t.tensor([1,0.5,0.5,0.3,0.3])
 
         self.drug_sim = t.DoubleTensor(drug_sim)
         self.target_sim = t.DoubleTensor(target_sim)
